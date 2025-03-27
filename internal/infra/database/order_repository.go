@@ -2,13 +2,14 @@ package database
 
 import (
 	"database/sql"
-
 	"github.com/ramonsoterio/clean-architecture/internal/entity"
 )
 
 type OrderRepository struct {
 	Db *sql.DB
 }
+
+const querySelectAllOrders = "SELECT id, price, tax, final_price FROM orders ORDER BY id DESC"
 
 func NewOrderRepository(db *sql.DB) *OrderRepository {
 	return &OrderRepository{Db: db}
@@ -33,4 +34,21 @@ func (r *OrderRepository) GetTotal() (int, error) {
 		return 0, err
 	}
 	return total, nil
+}
+
+func (r *OrderRepository) GetAll() ([]entity.Order, error) {
+	rows, err := r.Db.Query(querySelectAllOrders)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var orders []entity.Order
+	for rows.Next() {
+		var order entity.Order
+		if err = rows.Scan(&order.ID, &order.Price, &order.Tax, &order.FinalPrice); err != nil {
+			return nil, err
+		}
+		orders = append(orders, order)
+	}
+	return orders, nil
 }

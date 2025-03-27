@@ -7,15 +7,15 @@ import (
 
 type ListOrdersOutputDTO []OrderOutputDTO
 type ListOrdersUseCase struct {
-	repository entity.OrderRepositoryInterface
+	OrderRepository entity.OrderRepositoryInterface
 }
 
-func NewListOrdersUseCase(o entity.OrderRepositoryInterface) *ListOrdersUseCase {
-	return &ListOrdersUseCase{repository: o}
+func NewListOrdersUseCase(OrderRepository entity.OrderRepositoryInterface) *ListOrdersUseCase {
+	return &ListOrdersUseCase{OrderRepository: OrderRepository}
 }
 
 func (l *ListOrdersUseCase) Execute(_ context.Context) (ListOrdersOutputDTO, error) {
-	orders, err := l.repository.GetAll()
+	orders, err := l.OrderRepository.GetAll()
 	if err != nil {
 		return ListOrdersOutputDTO{}, err
 	}
