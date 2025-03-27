@@ -5,14 +5,13 @@ package main
 
 import (
 	"database/sql"
-
+	"github.com/google/wire"
 	"github.com/ramonsoterio/clean-architecture/internal/entity"
 	"github.com/ramonsoterio/clean-architecture/internal/event"
 	"github.com/ramonsoterio/clean-architecture/internal/infra/database"
 	"github.com/ramonsoterio/clean-architecture/internal/infra/web"
 	"github.com/ramonsoterio/clean-architecture/internal/usecase"
 	"github.com/ramonsoterio/clean-architecture/pkg/events"
-	"github.com/google/wire"
 )
 
 var setOrderRepositoryDependency = wire.NewSet(
@@ -48,4 +47,12 @@ func NewWebOrderHandler(db *sql.DB, eventDispatcher events.EventDispatcherInterf
 		web.NewWebOrderHandler,
 	)
 	return &web.WebOrderHandler{}
+}
+
+func NewListOrdersUseCase(db *sql.DB) *usecase.ListOrdersUseCase {
+	wire.Build(
+		setOrderRepositoryDependency,
+		usecase.NewListOrdersUseCase,
+	)
+	return &usecase.ListOrdersUseCase{}
 }
