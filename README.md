@@ -1,13 +1,9 @@
 # Instructions
 ## Running the application
-First, run MySQL and RabbitMQ services:
+Run all services. The command below will start the webserver in the port 8000,
+the graphql service in the port 8080 and grpc in the port 50052::
 ```
-docker-compose up -d
-```
-Second, run the application. This will start the webserver in the port 8000,
-the graphql service in the port 8080 and grpc in the port 50052:  
-```
-go run cmd/ordersystem/main.go cmd/ordersystem/wire_gen.go
+docker-compose up --build
 ```
 
 ## Testing webserver

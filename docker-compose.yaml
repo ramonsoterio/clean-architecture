@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  app:
+    build: .
+    container_name: app_ramon
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - orders_network
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+      - "50052:50052"
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -10,21 +22,38 @@ services:
       MYSQL_DATABASE: orders
       MYSQL_PASSWORD: root
     ports:
-      - 3306:3306
+      - "3306:3306"
+    networks:
+      - orders_network
     volumes:
       - db:/var/lib/mysql
       - ./db-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3.8.16-management
     container_name: rabbitmq
     restart: always
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - orders_network
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 10s
+      retries: 5
 
 volumes:
   db:
+
+networks:
+  orders_network:
+    driver: bridge

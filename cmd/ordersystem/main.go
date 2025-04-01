@@ -3,9 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"net"
-	"net/http"
-
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/ramonsoterio/clean-architecture/configs"
@@ -18,6 +15,8 @@ import (
 	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"net"
+	"net/http"
 
 	// mysql
 	_ "github.com/go-sql-driver/mysql"
@@ -76,7 +75,7 @@ func main() {
 }
 
 func getRabbitMQChannel() *amqp.Channel {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
 		panic(err)
 	}
